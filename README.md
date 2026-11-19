@@ -33,6 +33,21 @@ O sistema é composto por cinco microsserviços interligados:
 
 > Diagrama interativo: [FIAP - HACKATON FASE 5](https://www.tldraw.com/f/CPYtIC_xwtcfbSCH4vgkT?d=v567.4.3513.1667.page)
 
+### Repositórios do projeto
+
+| Repositório | O que faz | Stack |
+|---|---|---|
+| [soat-bff](https://github.com/felipeoli7eira/soat-bff) *(este)* | Porta de entrada do cliente; repassa para upload e relatório | PHP 8.4, Laravel 12, Nginx |
+| [soat-upload-service](https://github.com/felipeoli7eira/soat-upload-service) | Valida o diagrama, cria o protocolo, grava no S3 e publica na fila | Laravel, Clean Architecture, PostgreSQL, RabbitMQ |
+| [soat-fase5-trigger](https://github.com/nichcm/soat-fase5-trigger) | Consome a fila, chama a IA e guarda o status de cada protocolo | Laravel, PostgreSQL, RabbitMQ com DLQ |
+| [soat-fase5-report](https://github.com/nichcm/soat-fase5-report) | Busca o resultado no trigger e gera o PDF | Laravel, Clean Architecture, DomPDF |
+| [diagram-analyzer-service](https://github.com/GGroff15/iatd-soat-hackaton-diagram-analyzer-service) | Baixa o diagrama, chama o YOLO, roda OCR e publica o resultado na fila | Python 3.12, FastAPI, arquitetura hexagonal |
+| [yolo-inference](https://github.com/GGroff15/iatd-soat-hackaton-yolo-inference) | Detecta componentes e setas no desenho | Python 3.12, FastAPI, Ultralytics YOLOv8 |
+| [message-broker](https://github.com/felipeoli7eira/message-broker) | Sobe o RabbitMQ; tem o enunciado do hackathon e o diagrama de arquitetura | RabbitMQ |
+| [observability](https://github.com/GGroff15/iatd-soat-hackaton-observability) | Traces, logs e métricas de todos os serviços | OpenTelemetry, Grafana, Tempo, Loki, Prometheus |
+
+Todos rodam na rede Docker externa `soat-net` (`docker network create soat-net`).
+
 ---
 
 ## Fluxo da Solução
